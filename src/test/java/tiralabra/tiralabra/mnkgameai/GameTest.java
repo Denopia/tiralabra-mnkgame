@@ -3,76 +3,42 @@ package tiralabra.tiralabra.mnkgameai;
 import java.util.Scanner;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
-/**
- *
- * @author mlein
- */
 public class GameTest {
-    
-    public GameTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
 
-    /**
-     * Test of getScanner method, of class Game.
-     */
     @Test
     public void testGetScanner() {
-        System.out.println("getScanner");
-        Game instance = new Game();
-        Scanner expResult = null;
-        Scanner result = instance.getScanner();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        Game game = new Game();
+        Assert.assertNotNull(game.getScanner());
     }
 
-    /**
-     * Test of getBoard method, of class Game.
-     */
     @Test
     public void testGetBoard() {
-        System.out.println("getBoard");
-        Game instance = new Game();
-        char[][] expResult = null;
-        char[][] result = instance.getBoard();
-        assertArrayEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        Game game = new Game();
+        game.setGameBoard(new char[][]{{' ', ' '}, {' ', ' '}});
+        Assert.assertNotNull(game.getBoard());
     }
 
-    /**
-     * Test of newSymbol method, of class Game.
-     */
     @Test
     public void testNewSymbol() {
-        System.out.println("newSymbol");
-        char symbol = ' ';
-        String move = "";
-        Game instance = new Game();
-        instance.newSymbol(symbol, move);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        Game game = new Game();
+        game.setGameBoard(new char[][]{{' ', ' '}, {' ', ' '}});
+        game.newSymbol('A', "a-1");
+        Assert.assertTrue(game.getBoard()[0][0] == 'A');
     }
 
     /**
@@ -80,66 +46,44 @@ public class GameTest {
      */
     @Test
     public void testNextMove() {
-        System.out.println("nextMove");
-        Game instance = new Game();
-        instance.nextMove();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        Game game = new Game();
+        Player p1 = mock(Player.class);
+        Player p2 = mock(Player.class);
+        game.setPlayer1(p1);
+        game.setPlayer2(p2);
+        game.setTurn(1);
+        game.nextMove();
+        Assert.assertTrue(game.getTurn() == 2);
     }
 
-    /**
-     * Test of askSettings method, of class Game.
-     */
     @Test
     public void testAskSettings() {
-        System.out.println("askSettings");
-        Game instance = new Game();
-        instance.askSettings();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        Assert.assertTrue(true);
     }
 
-    /**
-     * Test of winner method, of class Game.
-     */
     @Test
     public void testWinner() {
-        System.out.println("winner");
-        Game instance = new Game();
-        int expResult = 0;
-        int result = instance.winner();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        Game game = new Game();
+        Assert.assertTrue(game.winner() == 999);
+
     }
 
-    /**
-     * Test of validMove method, of class Game.
-     */
     @Test
     public void testValidMove() {
-        System.out.println("validMove");
-        String move = "";
-        Game instance = new Game();
-        boolean expResult = false;
-        boolean result = instance.validMove(move);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+
+        Game game = new Game();
+        game.setGameBoard(new char[][]{{'X', ' '}, {' ', ' '}});
+        Assert.assertTrue(game.validMove("a-2"));
+        Assert.assertFalse(game.validMove("a-1"));
     }
 
-    /**
-     * Test of gameOver method, of class Game.
-     */
     @Test
     public void testGameOver() {
-        System.out.println("gameOver");
-        Game instance = new Game();
-        boolean expResult = false;
-        boolean result = instance.gameOver();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        Game game = new Game();
+        game.setGameBoard(new char[][]{{'X', ' '}, {'X', ' '}});
+        game.setWinCon(2);
+        game.setLatestMove(new int[]{0, 0});
+        Assert.assertTrue(game.gameOver());
     }
-    
+
 }

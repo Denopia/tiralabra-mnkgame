@@ -30,6 +30,69 @@ public class Game {
     }
 
     /**
+     * Asettaa annetun ruudukon pelin ruudukoksi.
+     *
+     * @param gb Ruudukko
+     */
+    public void setGameBoard(char[][] gb) {
+        this.gameBoard = gb;
+    }
+
+    /**
+     * Asettaa vuoron annetulle pelaajalle.
+     *
+     * @param turn Pelaaja, jolle annetaan vuoro
+     */
+    public void setTurn(int turn) {
+        this.turn = turn;
+    }
+
+    /**
+     * Asettaa annetun luvun voittoon johtavan suoran pituudeksi.
+     *
+     * @param wincon Voittosuoran pituus
+     */
+    public void setWinCon(int wincon) {
+        this.wincon = wincon;
+    }
+
+    /**
+     * Asettaa annetun ruudun viimeisimmaksi siirtoruuduksi.
+     *
+     * @param move Ruutu johon viimeisin siirto on tehty
+     */
+    public void setLatestMove(int[] move) {
+        this.latestMove = move;
+    }
+
+    /**
+     * Palauttaa vuorossa olevan pelaajan
+     *
+     * @return Vuorossa oleva pelaaja
+     */
+    public int getTurn() {
+        return this.turn;
+    }
+
+    /**
+     * Asettaa annetun pelaajan pelaajaksi 1
+     *
+     * @param player Pelaaja 1
+     */
+    public void setPlayer1(Player player) {
+        this.player1 = player;
+    }
+
+    /**
+     * Asettaa annetun pelaajan pelaajaksi 2
+     *
+     * @param player Pelaaja 2
+     */
+    public void setPlayer2(Player player) {
+        this.player2 = player;
+    }
+
+    /**
      * Antaa kayttoon pelissa luotavan skanneriolion.
      *
      * @return Skanneri
