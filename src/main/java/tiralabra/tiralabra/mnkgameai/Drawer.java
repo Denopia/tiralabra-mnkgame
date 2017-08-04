@@ -1,9 +1,14 @@
 package tiralabra.tiralabra.mnkgameai;
 
+/**
+ * Luokka on vastuussa pelitilanteiden piirtamisesta
+ *
+ */
 public class Drawer {
 
-    private static char[] alph = new char[]{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o'};
-
+    /**
+     * Piirtaa pelin aloitusviestin.
+     */
     static void drawStartMessage() {
         System.out.println(
                 "  ____  _     _   _             _ _                  _ _ \n"
@@ -14,6 +19,11 @@ public class Drawer {
                 + "                                         |_|             ");
     }
 
+    /**
+     * Piirtaa pelitilanteen.
+     *
+     * @param game Peli, jonka tilanne piirretaan
+     */
     static void drawGameState(Game game) {
         char[][] board = game.getBoard();
         System.out.print("  ");
@@ -27,22 +37,27 @@ public class Drawer {
         }
         System.out.print("\n  ");
         for (int i = 0; i < board[0].length; i++) {
-            System.out.print(" ---");
+            System.out.print("+---");
         }
-        System.out.print("\n");
+        System.out.print("+\n");
         for (int r = 0; r < board.length; r++) {
-            System.out.print(alph[r] + " ");
+            System.out.print(Game.alph[r] + " ");
             for (int c = 0; c < board[0].length; c++) {
                 System.out.print("| " + board[r][c] + " ");
             }
             System.out.print("|\n  ");
             for (int i = 0; i < board[0].length; i++) {
-                System.out.print(" ---");
+                System.out.print("+---");
             }
-            System.out.print("\n");
+            System.out.print("+\n");
         }
     }
 
+    /**
+     * Piirtaa pelin loppumisviestin.
+     *
+     * @param game Peli, jonka loppumisviesti piirretaan
+     */
     static void drawGameOverMessage(Game game) {
         int winner = game.winner();
         System.out.println("Pelin voitti pelaaja " + winner);
