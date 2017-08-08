@@ -43,7 +43,8 @@ public class Drawer {
         for (int r = 0; r < board.length; r++) {
             System.out.print(Game.alph[r] + " ");
             for (int c = 0; c < board[0].length; c++) {
-                System.out.print("| " + board[r][c] + " ");
+                //System.out.print("| " + board[r][c] + " ");
+                System.out.print("| " + game.getSquares()[r][c].getSymbol() + " ");
             }
             System.out.print("|\n  ");
             for (int i = 0; i < board[0].length; i++) {

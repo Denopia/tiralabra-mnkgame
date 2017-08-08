@@ -16,6 +16,7 @@ public class Game {
     private Player player1;
     private Player player2;
     private char[][] gameBoard;
+    private Square[][] squares;
     private int turn;
     private int wincon;
     private final Scanner scanner;
@@ -126,6 +127,7 @@ public class Game {
                 break;
             }
         }
+        this.squares[row][column].newSymbol(symbol, this.squares);
         this.gameBoard[row][column] = symbol;
         this.latestMove[0] = row;
         this.latestMove[1] = column;
@@ -161,9 +163,12 @@ public class Game {
         //default 15x15 for now
         this.gameBoard = new char[15][15];
         this.wincon = 5;
+        this.squares = new Square[15][15];
         for (int r = 0; r < this.gameBoard.length; r++) {
             for (int c = 0; c < gameBoard[0].length; c++) {
                 this.gameBoard[r][c] = ' ';
+                Square s = new Square(r, c, ' ');
+                squares[r][c] = s;
             }
         }
     }
@@ -226,10 +231,30 @@ public class Game {
      * @return True jos peli on paattynyt ja false jos ei ole
      */
     boolean gameOver() {
-        return checkDiaTopLeftToBottomRight()
+        int bestrow = 1;
+        for (int row = 0; row < squares.length; row++) {
+            for (int column = 0; column < squares[0].length; column++) {
+                Square s = squares[row][column];
+                bestrow = Math.max(bestrow, s.getSameSymbolN());
+                bestrow = Math.max(bestrow, s.getSameSymbolNW());
+                bestrow = Math.max(bestrow, s.getSameSymbolW());
+                bestrow = Math.max(bestrow, s.getSameSymbolSW());
+                int c = column + 1;
+                System.out.println("RUUTU " + alph[row] + "-" + c + " N:" + s.getSameSymbolN() + " NW:" + s.getSameSymbolNW() + " W:" + s.getSameSymbolW() + " SW:" + s.getSameSymbolSW());
+                if (s.getSameSymbolN() >= wincon - 1
+                        || s.getSameSymbolNW() >= wincon - 1
+                        || s.getSameSymbolW() >= wincon - 1
+                        || s.getSameSymbolSW() >= wincon - 1) {
+                    return true;
+                }
+            }
+        }
+        /*return checkDiaTopLeftToBottomRight()
                 || checkDiaBottomLeftToTopRight()
                 || checkHorMidLeftToMidRight()
-                || checkVerTopMidToBottomMid();
+                || checkVerTopMidToBottomMid();*/
+        System.out.println("PISIN RIVI TÄLLÄ HETKELLÄ ON " + bestrow + " MERKIN MITTAINEN");
+        return false;
     }
 
     /**
@@ -384,6 +409,20 @@ public class Game {
             }
         }
         return false;
+    }
+
+    /**
+     * @return the squares
+     */
+    public Square[][] getSquares() {
+        return squares;
+    }
+
+    /**
+     * @param squares the squares to set
+     */
+    public void setSquares(Square[][] squares) {
+        this.squares = squares;
     }
 
 }
