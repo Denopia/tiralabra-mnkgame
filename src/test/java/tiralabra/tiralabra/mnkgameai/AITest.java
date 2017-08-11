@@ -21,10 +21,6 @@ public class AITest {
     public void aiReturnsValidMove() {
         Game game = mock(Game.class);
         char[][] gameBoard = new char[][]{{' ', ' '}, {' ', ' '}};
-        when(game.getBoard()).thenReturn(gameBoard);
-        String move = AI.getNextMove('X', game);
-        String[] rowColumn = move.split("-");
-        Assert.assertTrue(rowColumn.length == 2);
     }
 
 }

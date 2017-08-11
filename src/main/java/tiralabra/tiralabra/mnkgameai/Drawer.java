@@ -25,7 +25,7 @@ public class Drawer {
      * @param game Peli, jonka tilanne piirretaan
      */
     static void drawGameState(Game game) {
-        char[][] board = game.getBoard();
+        int[][] board = game.getGameBoard();
         System.out.print("  ");
         for (int i = 0; i < board[0].length; i++) {
             int n = i + 1;
@@ -41,10 +41,18 @@ public class Drawer {
         }
         System.out.print("+\n");
         for (int r = 0; r < board.length; r++) {
-            System.out.print(Game.alph[r] + " ");
+            System.out.print(Game.getAlph()[r] + " ");
             for (int c = 0; c < board[0].length; c++) {
-                //System.out.print("| " + board[r][c] + " ");
-                System.out.print("| " + game.getSquares()[r][c].getSymbol() + " ");
+                int s = board[r][c];
+                if (s == 0) {
+                    System.out.print("| " + " " + " ");
+                }
+                if (s == 1) {
+                    System.out.print("| " + game.getPlayer1().getSymbol() + " ");
+                }
+                if (s == 2) {
+                    System.out.print("| " + game.getPlayer2().getSymbol() + " ");
+                }
             }
             System.out.print("|\n  ");
             for (int i = 0; i < board[0].length; i++) {
@@ -60,7 +68,7 @@ public class Drawer {
      * @param game Peli, jonka loppumisviesti piirretaan
      */
     static void drawGameOverMessage(Game game) {
-        int winner = game.winner();
+        int winner = 999;
         System.out.println("Pelin voitti pelaaja " + winner);
     }
 

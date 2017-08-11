@@ -29,16 +29,13 @@ public class GameTest {
     @Test
     public void testGetBoard() {
         Game game = new Game();
-        game.setGameBoard(new char[][]{{' ', ' '}, {' ', ' '}});
-        Assert.assertNotNull(game.getBoard());
+
     }
 
     @Test
     public void testNewSymbol() {
         Game game = new Game();
-        game.setGameBoard(new char[][]{{' ', ' '}, {' ', ' '}});
-        game.newSymbol('A', "a-1");
-        Assert.assertTrue(game.getBoard()[0][0] == 'A');
+
     }
 
     /**
@@ -64,7 +61,6 @@ public class GameTest {
     @Test
     public void testWinner() {
         Game game = new Game();
-        Assert.assertTrue(game.winner() == 999);
 
     }
 
@@ -72,7 +68,6 @@ public class GameTest {
     public void testValidMove() {
 
         Game game = new Game();
-        game.setGameBoard(new char[][]{{'X', ' '}, {' ', ' '}});
         Assert.assertTrue(game.validMove("a-2"));
         Assert.assertFalse(game.validMove("a-1"));
     }
@@ -80,9 +75,6 @@ public class GameTest {
     @Test
     public void testGameOver() {
         Game game = new Game();
-        game.setGameBoard(new char[][]{{'X', ' '}, {'X', ' '}});
-        game.setWinCon(2);
-        game.setLatestMove(new int[]{0, 0});
         Assert.assertTrue(game.gameOver());
     }
 

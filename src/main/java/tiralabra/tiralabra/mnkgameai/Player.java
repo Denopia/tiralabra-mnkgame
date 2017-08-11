@@ -8,6 +8,48 @@ package tiralabra.tiralabra.mnkgameai;
 public class Player {
 
     /**
+     * @return the number
+     */
+    public int getNumber() {
+        return number;
+    }
+
+    /**
+     * @param number the number to set
+     */
+    public void setNumber(int number) {
+        this.number = number;
+    }
+
+    /**
+     * @return the symbol
+     */
+    public char getSymbol() {
+        return symbol;
+    }
+
+    /**
+     * @param symbol the symbol to set
+     */
+    public void setSymbol(char symbol) {
+        this.symbol = symbol;
+    }
+
+    /**
+     * @return the type
+     */
+    public Type getType() {
+        return type;
+    }
+
+    /**
+     * @param type the type to set
+     */
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    /**
      * Pelaajatyypit.
      */
     public enum Type {
@@ -17,6 +59,7 @@ public class Player {
     private int number;
     private char symbol;
     private Type type;
+    private AI ai;
 
     /**
      * Konstruktori.
@@ -29,6 +72,10 @@ public class Player {
         this.number = num;
         this.symbol = sym;
         this.type = type;
+        if (type.equals(Type.AI)) {
+            this.ai = new AI();
+        }
+
     }
 
     /**
@@ -39,12 +86,16 @@ public class Player {
      */
     public void makeMove(Game game) {
         String move;
-        if (this.type == Type.AI) {
-            move = AI.getNextMove(this.symbol, game);
+        if (this.getType() == Type.AI) {
+            if (this.number == 1) {
+                move = this.ai.getNextMove(1, 2, game);
+            } else {
+                move = this.ai.getNextMove(2, 1, game);
+            }
         } else {
             move = readMove(game);
         }
-        game.newSymbol(this.symbol, move);
+        game.newSymbol(this.getNumber(), move);
     }
 
     /**
@@ -57,7 +108,7 @@ public class Player {
         System.out.println("Sinun vuorosi tehdä siirto (anna ruutu muodossa rivi-sarake esim. e-3)");
         String move = game.getScanner().nextLine();
         while (!game.validMove(move)) {
-            System.out.println("Siirto ei ollut oikeassa muodossa");
+            System.out.println("Siirto ei ole sallittu");
             move = game.getScanner().nextLine();
         }
         return move;
