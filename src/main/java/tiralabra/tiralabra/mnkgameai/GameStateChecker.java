@@ -1,5 +1,9 @@
 package tiralabra.tiralabra.mnkgameai;
 
+/**
+ * Luokka joka kasittelee peliruudukkoa.
+ *
+ */
 public class GameStateChecker {
 
     /**
@@ -27,14 +31,14 @@ public class GameStateChecker {
     public static int[][] playersLines(int[][] gameBoard, int wincon) {
         int[][] lines = new int[3][wincon + 1];
         checkWtoE(gameBoard, lines, wincon);
-        checkWtoE(shiftDown(mirror(gameBoard)), lines, wincon);
-        checkWtoE(rotate90(gameBoard), lines, wincon);
+        checkWtoE(shiftDown(mirrorVertical(gameBoard)), lines, wincon);
+        checkWtoE(mirrorDiagonal(gameBoard), lines, wincon);
         checkWtoE(shiftDown(gameBoard), lines, wincon);
         return lines;
     }
 
     /**
-     * Tarkastaa vaakarivilta samojen merkkien jonoja
+     * Tarkastaa vaakarivilta samojen merkkien jonoja.
      *
      * @param gameBoard Peliruudukko
      * @param lines Taulukko johon jonot tallennetaan
@@ -102,16 +106,16 @@ public class GameStateChecker {
     }
 
     /**
-     * Kaantaa taulukkoa 90 astetta.
+     * Palauttaa taulukon pelikuvan valistajan suhteen.
      *
-     * @param gameBoard Kaanneettava taulukko
-     * @return Kaannetty taulukko
+     * @param gameBoard Peilattava taulukko
+     * @return Peilattu taulukko
      */
-    private static int[][] rotate90(int[][] gameBoard) {
+    private static int[][] mirrorDiagonal(int[][] gameBoard) {
         int[][] rotatedGameBoard = new int[gameBoard[0].length][gameBoard.length];
         for (int r = 0; r < gameBoard.length; r++) {
             for (int c = 0; c < gameBoard[0].length; c++) {
-                rotatedGameBoard[r][c] = gameBoard[c][r];
+                rotatedGameBoard[c][r] = gameBoard[r][c];
             }
         }
         return rotatedGameBoard;
@@ -141,12 +145,12 @@ public class GameStateChecker {
     }
 
     /**
-     * Palauttaa taulukon pelikuvan
+     * Palauttaa taulukon pelikuvan pystyakselin suhteen.
      *
      * @param gameBoard Peilikuvattava taulukko
-     * @return Taulukon peilikuva
+     * @return Peilattu taulukko
      */
-    private static int[][] mirror(int[][] gameBoard) {
+    private static int[][] mirrorVertical(int[][] gameBoard) {
         int[][] mirroredGameBoard = new int[gameBoard.length][gameBoard[0].length];
         for (int row = 0; row < gameBoard.length; row++) {
             for (int col = 0; col < gameBoard[0].length; col++) {

@@ -2,19 +2,69 @@ package tiralabra.tiralabra.mnkgameai;
 
 import java.util.Scanner;
 
+/**
+ * Ristinollapeliluokka. Huolehtii pelin etenemisesta.
+ *
+ */
 public class Game {
 
-    private static char[] alph = new char[]{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o'};
+    private static char[] alph = new char[]{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't'};
 
     private Player player1;
     private Player player2;
+    private int firstPlayer;
     private int[][] gameBoard;
     private int turn;
     private int wincon;
+    private int lastMove1[];
+    private int lastMove2[];
     private Scanner scanner;
+    private int availableMoves;
 
+    /**
+     * Konstruktori.
+     */
     public Game() {
         this.scanner = new Scanner(System.in);
+        this.lastMove1 = new int[2];
+        this.lastMove2 = new int[2];
+        this.lastMove1[0] = -1;
+        this.lastMove1[1] = -1;
+        this.lastMove2[0] = -1;
+        this.lastMove2[1] = -1;
+    }
+
+    /**
+     * Kysyy kayttajalta peliasetukset.
+     */
+    void askSettings() {
+        askBoardSize();
+        askPlayers();
+    }
+
+    /**
+     * Kysyy kayttajalta minka kokoisella ruudukolla pelia pelataan. (Talla
+     * hetkella kayttaa vain oletusasetuksia.)
+     */
+    private void askBoardSize() {
+        int rows = 8;
+        int cols = 8;
+        int wincon = 5;
+        this.setGameBoard(new int[rows][cols]);
+        this.setWincon(wincon);
+        this.setAvailableMoves(rows * cols);
+    }
+
+    /**
+     * Kysyy kayttajalta minkalaiset pelaajat pelaavat pelia. (Talla hetkella
+     * kayttaa vain oletusasetuksia.)
+     */
+    private void askPlayers() {
+        AI ai = new AI(alph);
+        this.setPlayer1(new Player(1, 'o', 'O', Player.Type.AI, ai));
+        this.setPlayer2(new Player(2, 'x', 'X', Player.Type.AI, ai));
+        this.setTurn(1);
+        this.setFirstPlayer(1);
     }
 
     /**
@@ -31,32 +81,32 @@ public class Game {
     }
 
     /**
-     * Kysyy kayttajalta peliasetukset.
+     * Lisaa peliruudukkoon uuden merkin.
+     *
+     * @param p Lisattava merkki
+     * @param move Lisattavan merkin paikka
      */
-    void askSettings() {
-        askBoardSize();
-        askPlayers();
-    }
-
-    /**
-     * Kysyy kayttajalta minka kokoisella ruudukolla pelia pelataan. (Talla
-     * hetkella kayttaa vain oletusasetuksia.)
-     */
-    private void askBoardSize() {
-        //default 15x15 for now
-        this.setGameBoard(new int[15][15]);
-        this.setWincon(5);
-    }
-
-    /**
-     * Kysyy kayttajalta minkalaiset pelaajat pelaavat pelia. (Talla hetkella
-     * kayttaa vain oletusasetuksia.)
-     */
-    private void askPlayers() {
-        //default player vs ai for now
-        this.setPlayer1(new Player(1, 'o', Player.Type.HUMAN));
-        this.setPlayer2(new Player(2, 'x', Player.Type.AI));
-        this.setTurn(1);
+    public void newSymbol(int p, String move) {
+        int row = 0;
+        int col = 0;
+        String[] rowcol = move.split("-");
+        for (int i = 0; i < alph.length; i++) {
+            if (rowcol[0].equals("" + alph[i])) {
+                row = i;
+                break;
+            }
+        }
+        col = Integer.parseInt(rowcol[1]) - 1;
+        this.gameBoard[row][col] = p;
+        if (p == 1) {
+            this.lastMove1[0] = row;
+            this.lastMove1[1] = col;
+        }
+        if (p == 2) {
+            this.lastMove2[0] = row;
+            this.lastMove2[1] = col;
+        }
+        this.setAvailableMoves(this.getAvailableMoves() - 1);
     }
 
     /**
@@ -91,121 +141,20 @@ public class Game {
     }
 
     /**
-     * @return the player1
-     */
-    public Player getPlayer1() {
-        return player1;
-    }
-
-    /**
-     * @param player1 the player1 to set
-     */
-    public void setPlayer1(Player player1) {
-        this.player1 = player1;
-    }
-
-    /**
-     * @return the player2
-     */
-    public Player getPlayer2() {
-        return player2;
-    }
-
-    /**
-     * @param player2 the player2 to set
-     */
-    public void setPlayer2(Player player2) {
-        this.player2 = player2;
-    }
-
-    /**
-     * @return the gameBoard
-     */
-    public int[][] getGameBoard() {
-        return gameBoard;
-    }
-
-    /**
-     * @param gameBoard the gameBoard to set
-     */
-    public void setGameBoard(int[][] gameBoard) {
-        this.gameBoard = gameBoard;
-    }
-
-    /**
-     * @return the turn
-     */
-    public int getTurn() {
-        return turn;
-    }
-
-    /**
-     * @param turn the turn to set
-     */
-    public void setTurn(int turn) {
-        this.turn = turn;
-    }
-
-    /**
-     * @return the wincon
-     */
-    public int getWincon() {
-        return wincon;
-    }
-
-    /**
-     * @param wincon the wincon to set
-     */
-    public void setWincon(int wincon) {
-        this.wincon = wincon;
-    }
-
-    /**
-     * @return the scanner
-     */
-    public Scanner getScanner() {
-        return scanner;
-    }
-
-    /**
-     * @param scanner the scanner to set
-     */
-    public void setScanner(Scanner scanner) {
-        this.scanner = scanner;
-    }
-
-    /**
-     * @return the alph
-     */
-    public static char[] getAlph() {
-        return alph;
-    }
-
-    /**
-     * @param aAlph the alph to set
-     */
-    public static void setAlph(char[] aAlph) {
-        alph = aAlph;
-    }
-
-    /**
-     * Lisaa ruudukkoon uuden merkin.
+     * Palauttaa pelin voittajan.
      *
-     * @param p Lisattava merkki
-     * @param move Lisattavan merkin paikka
+     * @return 1 jos pelaaja 1 voittaa, 2 jos pelaaja 2 voittaa ja 0 jos
+     * tasapeli
      */
-    public void newSymbol(int p, String move) {
-        int row = 0;
-        int col = 0;
-        String[] rowcol = move.split("-");
-        for (int i = 0; i < alph.length; i++) {
-            if (rowcol[0].equals("" + alph[i])) {
-                row = i;
-                break;
-            }
+    public int getWinner() {
+        int[][] lines = GameStateChecker.playersLines(this.gameBoard, this.wincon);
+        if (lines[1][wincon] > 0) {
+            return 1;
         }
-        col = Integer.parseInt(rowcol[1]) - 1;
-        this.gameBoard[row][col] = p;
+        if (lines[2][wincon] > 0) {
+            return 2;
+        }
+        return 0;
     }
 
     /**
@@ -214,7 +163,94 @@ public class Game {
      * @return true jos peli loppuu, false jos ei
      */
     public boolean gameOver() {
-        return GameStateChecker.checkGameOver(this.gameBoard, this.wincon);
+        return GameStateChecker.checkGameOver(this.gameBoard, this.wincon) || this.getAvailableMoves() == 0;
     }
 
+    public Player getPlayer1() {
+        return player1;
+    }
+
+    public void setPlayer1(Player player1) {
+        this.player1 = player1;
+    }
+
+    public Player getPlayer2() {
+        return player2;
+    }
+
+    public void setPlayer2(Player player2) {
+        this.player2 = player2;
+    }
+
+    public int[][] getGameBoard() {
+        return gameBoard;
+    }
+
+    public void setGameBoard(int[][] gameBoard) {
+        this.gameBoard = gameBoard;
+    }
+
+    public int getTurn() {
+        return turn;
+    }
+
+    public void setTurn(int turn) {
+        this.turn = turn;
+    }
+
+    public int getWincon() {
+        return wincon;
+    }
+
+    public void setWincon(int wincon) {
+        this.wincon = wincon;
+    }
+
+    public Scanner getScanner() {
+        return scanner;
+    }
+
+    public void setScanner(Scanner scanner) {
+        this.scanner = scanner;
+    }
+
+    public static char[] getAlph() {
+        return alph;
+    }
+
+    public static void setAlph(char[] aAlph) {
+        alph = aAlph;
+    }
+
+    public int getFirstPlayer() {
+        return firstPlayer;
+    }
+
+    public void setFirstPlayer(int firstPlayer) {
+        this.firstPlayer = firstPlayer;
+    }
+
+    public int[] getLastMove1() {
+        return lastMove1;
+    }
+
+    public void setLastMove1(int[] lastMove) {
+        this.lastMove1 = lastMove;
+    }
+
+    public int[] getLastMove2() {
+        return lastMove2;
+    }
+
+    public void setLastMove2(int[] lastMove2) {
+        this.lastMove2 = lastMove2;
+    }
+
+    public int getAvailableMoves() {
+        return availableMoves;
+    }
+
+    public void setAvailableMoves(int availableMoves) {
+        this.availableMoves = availableMoves;
+    }
 }

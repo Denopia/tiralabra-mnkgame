@@ -48,10 +48,18 @@ public class Drawer {
                     System.out.print("| " + " " + " ");
                 }
                 if (s == 1) {
-                    System.out.print("| " + game.getPlayer1().getSymbol() + " ");
+                    if (game.getLastMove1()[0] == r && game.getLastMove1()[1] == c) {
+                        System.out.print("| " + game.getPlayer1().getBigSymbol() + " ");
+                    } else {
+                        System.out.print("| " + game.getPlayer1().getSymbol() + " ");
+                    }
                 }
                 if (s == 2) {
-                    System.out.print("| " + game.getPlayer2().getSymbol() + " ");
+                    if (game.getLastMove2()[0] == r && game.getLastMove2()[1] == c) {
+                        System.out.print("| " + game.getPlayer2().getBigSymbol() + " ");
+                    } else {
+                        System.out.print("| " + game.getPlayer2().getSymbol() + " ");
+                    }
                 }
             }
             System.out.print("|\n  ");
@@ -68,8 +76,13 @@ public class Drawer {
      * @param game Peli, jonka loppumisviesti piirretaan
      */
     static void drawGameOverMessage(Game game) {
-        int winner = 999;
-        System.out.println("Pelin voitti pelaaja " + winner);
+        int winner = game.getWinner();
+        if (winner == 0) {
+            System.out.println("Peli päättyi tasapeliin.");
+        } else {
+            System.out.println("Pelin voitti pelaaja " + winner + ".");
+        }
+
     }
 
 }

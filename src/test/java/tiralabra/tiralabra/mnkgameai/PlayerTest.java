@@ -4,6 +4,9 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class PlayerTest {
 
@@ -17,9 +20,14 @@ public class PlayerTest {
 
     @Test
     public void testMakeMove() {
-        Player player1 = new Player(1, 'X', Player.Type.AI);
-        Game game = new Game();
-        player1.makeMove(game);
+        AI ai = mock(AI.class);
+        Game game = mock(Game.class);
+        Player p = new Player(1, 'a', 'A', Player.Type.AI, ai);
+        Player p2 = new Player(2, 'b', 'B', Player.Type.AI, ai);
+        p.makeMove(game);
+        verify(ai, times(1)).getNextMove(1, 2, game);
+        p2.makeMove(game);
+        verify(ai, times(1)).getNextMove(2, 1, game);
     }
 
 }

@@ -8,48 +8,6 @@ package tiralabra.tiralabra.mnkgameai;
 public class Player {
 
     /**
-     * @return the number
-     */
-    public int getNumber() {
-        return number;
-    }
-
-    /**
-     * @param number the number to set
-     */
-    public void setNumber(int number) {
-        this.number = number;
-    }
-
-    /**
-     * @return the symbol
-     */
-    public char getSymbol() {
-        return symbol;
-    }
-
-    /**
-     * @param symbol the symbol to set
-     */
-    public void setSymbol(char symbol) {
-        this.symbol = symbol;
-    }
-
-    /**
-     * @return the type
-     */
-    public Type getType() {
-        return type;
-    }
-
-    /**
-     * @param type the type to set
-     */
-    public void setType(Type type) {
-        this.type = type;
-    }
-
-    /**
      * Pelaajatyypit.
      */
     public enum Type {
@@ -58,6 +16,7 @@ public class Player {
 
     private int number;
     private char symbol;
+    private char bigSymbol;
     private Type type;
     private AI ai;
 
@@ -65,17 +24,17 @@ public class Player {
      * Konstruktori.
      *
      * @param num Pelaajan id
-     * @param sym Pelaajan pelimerkki X tai O
+     * @param sym Pelaajan pelimerkki x tai o
+     * @param bsym Pelaajan iso pelimerkki X tai O
      * @param type Pelaajan tyyppi
+     * @param ai Pelaajalle annettava tekoaly
      */
-    public Player(int num, char sym, Type type) {
+    public Player(int num, char sym, char bsym, Type type, AI ai) {
         this.number = num;
         this.symbol = sym;
         this.type = type;
-        if (type.equals(Type.AI)) {
-            this.ai = new AI();
-        }
-
+        this.bigSymbol = bsym;
+        this.ai = ai;
     }
 
     /**
@@ -112,6 +71,38 @@ public class Player {
             move = game.getScanner().nextLine();
         }
         return move;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
+    }
+
+    public char getSymbol() {
+        return symbol;
+    }
+
+    public void setSymbol(char symbol) {
+        this.symbol = symbol;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    public char getBigSymbol() {
+        return bigSymbol;
+    }
+
+    public void setBigSymbol(char bigSymbol) {
+        this.bigSymbol = bigSymbol;
     }
 
 }

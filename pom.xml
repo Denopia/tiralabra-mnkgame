@@ -67,6 +67,20 @@
                 <groupId>org.pitest</groupId>
                 <artifactId>pitest-maven</artifactId>
                 <version>1.1.8</version>
+                <configuration>
+                    <targetClasses>
+                        <param>tiralabra.tiralabra.mnkgameai.AI</param>
+                        <param>tiralabra.tiralabra.mnkgameai.Game</param>
+                        <param>tiralabra.tiralabra.mnkgameai.GameStateChecker</param>
+                        <param>tiralabra.tiralabra.mnkgameai.Player</param>
+                    </targetClasses>
+                    <targetTests>
+                        <param>tiralabra.tiralabra.mnkgameai.AITest</param>
+                        <param>tiralabra.tiralabra.mnkgameai.GameTest</param>
+                        <param>tiralabra.tiralabra.mnkgameai.GameStateCheckerTest</param>
+                        <param>tiralabra.tiralabra.mnkgameai.PlayerTest</param>
+                    </targetTests>
+                </configuration>
             </plugin>
         </plugins>
     </build>

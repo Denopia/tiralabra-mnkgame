@@ -19,8 +19,17 @@ public class AITest {
 
     @Test
     public void aiReturnsValidMove() {
-        Game game = mock(Game.class);
-        char[][] gameBoard = new char[][]{{' ', ' '}, {' ', ' '}};
+        Game game = new Game();
+        game.setAvailableMoves(9);
+        game.setFirstPlayer(1);
+        game.setGameBoard(new int[][]{{0, 0, 0}, {0, 0, 0}, {0, 0, 0}});
+        game.setLastMove1(new int[]{-1, -1});
+        game.setLastMove2(new int[]{-1, -1});
+        game.setTurn(1);
+        game.setWincon(3);
+        AI ai = new AI(Game.getAlph());
+        String move = ai.getNextMove(1, 2, game);
+        org.junit.Assert.assertEquals("b-2", move);
     }
 
 }
