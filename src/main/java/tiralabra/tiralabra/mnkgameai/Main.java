@@ -14,19 +14,31 @@ public class Main {
      */
     public static void main(String[] args) {
 
-        Game game = new Game();
+        int runs = 5;
+        long totalTime = 0;
 
-        Drawer.drawStartMessage();
+        for (int i = 0; i < runs; i++) {
+            long aikaAlussa = System.currentTimeMillis();
 
-        game.askSettings();
+            Game game = new Game();
 
-        Drawer.drawGameState(game);
+            Drawer.drawStartMessage();
 
-        while (!game.gameOver()) {
-            game.nextMove();
+            game.askSettings();
+
             Drawer.drawGameState(game);
-        }
 
-        Drawer.drawGameOverMessage(game);
+            while (!game.gameOver()) {
+                game.nextMove();
+                Drawer.drawGameState(game);
+            }
+
+            Drawer.drawGameOverMessage(game);
+
+            long aikaLopussa = System.currentTimeMillis();
+            totalTime += aikaLopussa - aikaAlussa;
+        }
+        double avgTime = 1.0 * totalTime / runs;
+        System.out.println("Keskimäärin aikaa kului: " + avgTime + "ms.");
     }
 }

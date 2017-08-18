@@ -47,8 +47,8 @@ public class Game {
      * hetkella kayttaa vain oletusasetuksia.)
      */
     private void askBoardSize() {
-        int rows = 8;
-        int cols = 8;
+        int rows = 10;
+        int cols = 10;
         int wincon = 5;
         this.setGameBoard(new int[rows][cols]);
         this.setWincon(wincon);
