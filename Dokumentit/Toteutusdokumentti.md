@@ -15,15 +15,15 @@ peliruudukkoa.
 ### Saavutetut aika- ja tilavaativuudet
 Peli ottaa käyttäjätlä syötteenä peliruudukon leveyden ja korkeuden
 (EI VIELÄ TÄLLÄ HETKELLÄ). Eli jos r on korkeus ja c on leveys niin
-tilaa kuluu r*c. Koska tutkimme pelipuuta syvyyssuunnassa , jokaisen 
+tilaa kuluu r&ast;c. Koska tutkimme pelipuuta syvyyssuunnassa , jokaisen 
 edeltävän solmun tilanne muistetaan, eli syvyyden ollessa d, tilaa
-tarvitaan r*c*d. Tällä hetkellä tekoäly tutkii peliä 4 siirtoa eteenpäin.
+tarvitaan r&ast;c&ast;d. Tällä hetkellä tekoäly tutkii peliä 4 siirtoa eteenpäin.
 Jos syvyyttä tästä kasvatetaan, päätöksenteko kestää liian kauan isommilla
 peliruudukoilla. Tallennettavaa tila on siis suoraan verrannollinen 
 käyttäjän haluaman peliruudukon kokoon. 
 
 Koska syvyys on nyt 4 ja tutkimme kaikki mahdolliset siirrot aikavaativuudeksi
-saadaan (r*c)^4. Tätä kuitenkin nopeuttaa alpha-beta-karsinta, ja muu
+saadaan (r&ast;c)^4. Tätä kuitenkin nopeuttaa alpha-beta-karsinta, ja muu
 optimointi (ei tutkita solmuja joissa siirto tehtäisiin kauas muista tehdyistä
 siirroista).
 
