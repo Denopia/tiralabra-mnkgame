@@ -38,8 +38,8 @@ public class Game {
      * Kysyy kayttajalta peliasetukset.
      */
     void askSettings() {
-        askBoardSize();
         askPlayers();
+        askBoardSize();
     }
 
     /**
@@ -50,9 +50,61 @@ public class Game {
         int rows = 10;
         int cols = 10;
         int wincon = 5;
+        int gb = askANumber("\nValitse ruudukon koko ja voittosuoran pituus\n 1) 3x3    3\n 2) 6x4    4\n 3) 5x5    5\n 4) 9x9    5\n 5) 10x10  5\n 6) 15x15  5", 6);
+        switch (gb) {
+            case 1:
+                rows = 3;
+                cols = 3;
+                wincon = 3;
+                break;
+            case 2:
+                rows = 6;
+                cols = 4;
+                wincon = 4;
+                break;
+            case 3:
+                rows = 5;
+                cols = 5;
+                wincon = 5;
+                break;
+            case 4:
+                rows = 9;
+                cols = 9;
+                wincon = 5;
+                break;
+            case 5:
+                rows = 10;
+                cols = 10;
+                wincon = 5;
+                break;
+            case 6:
+                rows = 15;
+                cols = 15;
+                wincon = 5;
+        }
         this.setGameBoard(new int[rows][cols]);
         this.setWincon(wincon);
         this.setAvailableMoves(rows * cols);
+    }
+
+    private int askANumber(String message, int options) {
+        System.out.println(message);
+        String ans = "valinta";
+        int nunbero = -1;
+        while (true) {
+            ans = scanner.nextLine();
+            try {
+                nunbero = Integer.parseInt(ans);
+            } catch (NumberFormatException e) {
+
+            }
+            if (nunbero < 0 || nunbero > options) {
+                System.out.println("Yritä valita yksi esitetyistä vaihtoehdoista");
+                continue;
+            }
+            break;
+        }
+        return nunbero;
     }
 
     /**
@@ -61,10 +113,26 @@ public class Game {
      */
     private void askPlayers() {
         AI ai = new AI(alph);
-        this.setPlayer1(new Player(1, 'o', 'O', Player.Type.AI, ai));
-        this.setPlayer2(new Player(2, 'x', 'X', Player.Type.AI, ai));
-        this.setTurn(1);
-        this.setFirstPlayer(1);
+        int gm = askANumber("\nValitse pelimuoto\n 1) Ihminen vastaan tekoäly\n 2) Tekoäly vastaan tekoäly", 2);
+        if (gm == 1) {
+            this.setPlayer1(new Player(1, 'o', 'O', Player.Type.HUMAN, ai));
+            this.setPlayer2(new Player(2, 'x', 'X', Player.Type.AI, ai));
+            System.out.println("\nPelaaja 1: Ihminen O");
+            System.out.println("Pelaaja 2: Tekoäly X");
+            int fp = askANumber("\nValitse pelin aloittaja\n 1) Pelaaja 1\n 2) Pelaaja 2", 2);
+            if (fp == 1) {
+                this.setTurn(1);
+                this.setFirstPlayer(1);
+            } else {
+                this.setTurn(2);
+                this.setFirstPlayer(2);
+            }
+        } else {
+            this.setPlayer1(new Player(1, 'o', 'O', Player.Type.AI, ai));
+            this.setPlayer2(new Player(2, 'x', 'X', Player.Type.AI, ai));
+            this.setTurn(1);
+            this.setFirstPlayer(1);
+        }
     }
 
     /**
@@ -120,7 +188,12 @@ public class Game {
         if (rowcolumn.length != 2) {
             return false;
         }
-        int column = Integer.parseInt(rowcolumn[1]) - 1;
+        int column = -1;
+        try {
+            column = Integer.parseInt(rowcolumn[1]) - 1;
+        } catch (NumberFormatException e) {
+            return false;
+        }
         int row = -1;
         for (int i = 0; i < getAlph().length; i++) {
             if (rowcolumn[0].equals("" + getAlph()[i])) {

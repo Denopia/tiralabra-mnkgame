@@ -14,7 +14,7 @@ public class Main {
      */
     public static void main(String[] args) {
 
-        int runs = 5;
+        int runs = 1;
         long totalTime = 0;
 
         for (int i = 0; i < runs; i++) {
