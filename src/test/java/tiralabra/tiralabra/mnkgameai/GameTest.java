@@ -1,5 +1,7 @@
 package tiralabra.tiralabra.mnkgameai;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -129,6 +131,55 @@ public class GameTest {
         gb2[2][1] = 2;
         game.setGameBoard(gb2);
         Assert.assertEquals(2, game.getWinner());
+    }
+
+    @Test
+    public void askingSettingsWorks1() {
+        String data = "1\n1\n1";
+        System.setIn(new ByteArrayInputStream(data.getBytes()));
+        Game game = new Game();
+        game.askSettings();
+        Assert.assertEquals(3, game.getGameBoard().length);
+        Assert.assertEquals(3, game.getGameBoard()[0].length);
+        Assert.assertEquals(1, game.getFirstPlayer());
+    }
+
+    @Test
+    public void askingSettingsWorks2() {
+        String data = "-1\n1\n1\n3";
+        System.setIn(new ByteArrayInputStream(data.getBytes()));
+        Game game = new Game();
+        game.askSettings();
+        Assert.assertEquals(5, game.getGameBoard().length);
+        Assert.assertEquals(5, game.getGameBoard()[0].length);
+        Assert.assertEquals(1, game.getFirstPlayer());
+    }
+
+    @Test
+    public void askingSettingsWorks3() {
+        String data = "2\n2";
+        System.setIn(new ByteArrayInputStream(data.getBytes()));
+        Game game = new Game();
+        game.askSettings();
+        Assert.assertEquals(6, game.getGameBoard().length);
+        Assert.assertEquals(4, game.getGameBoard()[0].length);
+        Assert.assertEquals(1, game.getFirstPlayer());
+        Assert.assertEquals(Player.Type.AI, game.getPlayer1().getType());
+        Assert.assertEquals(24, game.getAvailableMoves());
+    }
+
+    @Test
+    public void askingSettingsWorks4() {
+        String data = "1\n2\n4";
+        System.setIn(new ByteArrayInputStream(data.getBytes()));
+        Game game = new Game();
+        game.askSettings();
+        Assert.assertEquals(9, game.getGameBoard().length);
+        Assert.assertEquals(9, game.getGameBoard()[0].length);
+        Assert.assertEquals(2, game.getFirstPlayer());
+        Assert.assertEquals(Player.Type.HUMAN, game.getPlayer1().getType());
+        Assert.assertEquals(5, game.getWincon());
+
     }
 
 }
