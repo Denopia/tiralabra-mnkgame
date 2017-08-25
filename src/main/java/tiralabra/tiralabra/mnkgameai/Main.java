@@ -39,6 +39,6 @@ public class Main {
             totalTime += aikaLopussa - aikaAlussa;
         }
         double avgTime = 1.0 * totalTime / runs;
-        System.out.println("Keskimäärin aikaa kului: " + avgTime + "ms.");
+        //System.out.println("Keskimäärin aikaa kului: " + avgTime + "ms.");
     }
 }

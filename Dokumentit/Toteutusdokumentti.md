@@ -13,11 +13,11 @@ käsitellä kaksiulotteisia taulukkoja, eli tässä tapauksesa
 peliruudukkoa. 
 
 ### Saavutetut aika- ja tilavaativuudet
-Peli ottaa käyttäjätlä syötteenä peliruudukon leveyden ja korkeuden
-(EI VIELÄ TÄLLÄ HETKELLÄ). Eli jos r on korkeus ja c on leveys niin
-tilaa kuluu r&ast;c. Koska tutkimme pelipuuta syvyyssuunnassa , jokaisen 
-edeltävän solmun tilanne muistetaan, eli syvyyden ollessa d, tilaa
-tarvitaan r&ast;c&ast;d. Tällä hetkellä tekoäly tutkii peliä 4 siirtoa eteenpäin.
+Peli ottaa käyttäjätlä syötteenä peliruudukon leveyden ja korkeuden. 
+Eli jos r on korkeus ja c on leveys niin tilaa kuluu r&ast;c. Koska
+tutkimme pelipuuta syvyyssuunnassa , jokaisen edeltävän solmun 
+tilanne muistetaan, eli syvyyden ollessa d, tilaa tarvitaan r&ast;c&ast;d.
+Tällä hetkellä tekoäly tutkii peliä 4 siirtoa eteenpäin.
 Jos syvyyttä tästä kasvatetaan, päätöksenteko kestää liian kauan isommilla
 peliruudukoilla. Tallennettavaa tila on siis suoraan verrannollinen 
 käyttäjän haluaman peliruudukon kokoon. 
@@ -46,9 +46,18 @@ kestoja erikokoisilla ruudukoilla.
 | 10x10         | 5                   | 101093     | 1                 |
 
 Varmaan mielenkiintoisempaa on testata kuinka kauan keskimäärin yhden siirron
-päättäminen kestää. Tutkitaan tätä myöhemmin.
+päättäminen kestää. 
 
 ###Parannusehdotukset ja puutteet
 
+Tekoäly miettii siirtoa suuremmilla ruudukoilla pidempään, koska vaihtoehtoja 
+on luonnollisestikin enemmän. Pelin edetessä vaihtoehtoja tulee lisää, koska
+tutkitaan vain siirtoja, jotka ovat jo valmiina ruudukolla olevien merkkien
+läheisyydessä. Tekoälyä vastaan pelattaessa isoilla ruudukoilla saattaakin 
+joutua odottamaan liian kauan myöhemmillä kierroksilla, joten olisi järkevää
+keksiä ratkaisu päätöksenteon nopeuttamiseksi. 
 
-jatketaan myöhemmin
+Olisi myös käyttäjän kannalta miellyttävää, jos peliin lisättäisiin vielä
+mahdollisuus valita hänen haluamansa kokoinen ruudukko. Nyt käyttäjä joutuu
+valitsemaan valmiista vaihtoehdoista. Näitä puutteita yritetään vielä korjata
+viimeisen viikon aikana.

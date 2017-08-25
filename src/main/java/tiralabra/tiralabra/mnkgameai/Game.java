@@ -43,8 +43,7 @@ public class Game {
     }
 
     /**
-     * Kysyy kayttajalta minka kokoisella ruudukolla pelia pelataan. (Talla
-     * hetkella kayttaa vain oletusasetuksia.)
+     * Kysyy kayttajalta minka kokoisella ruudukolla pelia pelataan.
      */
     private void askBoardSize() {
         int rows = 10;
@@ -87,6 +86,13 @@ public class Game {
         this.setAvailableMoves(rows * cols);
     }
 
+    /**
+     * Kysyy kayttajalta luvun yhden ja annetun luvun valilta.
+     *
+     * @param message Kayttajalle naytettava viesti
+     * @param options Suurin luku, jonka kayttaja voi antaa
+     * @return Kayttajan valitsema luku
+     */
     private int askANumber(String message, int options) {
         System.out.println(message);
         String ans = "valinta";
@@ -108,8 +114,7 @@ public class Game {
     }
 
     /**
-     * Kysyy kayttajalta minkalaiset pelaajat pelaavat pelia. (Talla hetkella
-     * kayttaa vain oletusasetuksia.)
+     * Kysyy kayttajalta minkalaiset pelaajat pelaavat pelia.
      */
     private void askPlayers() {
         AI ai = new AI(alph);
