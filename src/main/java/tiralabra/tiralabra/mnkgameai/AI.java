@@ -1,5 +1,7 @@
 package tiralabra.tiralabra.mnkgameai;
 
+import java.util.Random;
+
 /**
  * Tama luokka vastuussa tekoalyn tekemista siirroista.
  *
@@ -8,6 +10,7 @@ public class AI {
 
     private final char[] alph;
     private String nextMove;
+    private Random random;
 
     /**
      * Konstruktori.
@@ -17,6 +20,7 @@ public class AI {
     public AI(char[] alph) {
         this.nextMove = "";
         this.alph = alph;
+        this.random = new Random();
     }
 
     /**
@@ -28,7 +32,17 @@ public class AI {
      * @return Ruutu, johon tekoaly haluaa laittaa merkkinsa
      */
     public String getNextMove(int player, int opponent, Game game) {
-        decideNextMove(game.getGameBoard(), player, opponent, 3, game.getWincon(), -999999999, 999999999);
+        int[][] moves;
+        if (immediateMove(player, opponent, game)) {
+            System.out.println("IMMEDIATE MOVE");
+            moves = decideNextMove(game.getGameBoard(), player, opponent, 0, game.getWincon(), -999999999, 999999999);
+        } else {
+            moves = decideNextMove(game.getGameBoard(), player, opponent, 3, game.getWincon(), -999999999, 999999999);
+        }
+        int move = this.random.nextInt(moves.length);
+        int row = moves[move][0];
+        int col = moves[move][1] + 1;
+        this.nextMove = alph[row] + "-" + col;
         return this.nextMove;
     }
 
@@ -43,7 +57,7 @@ public class AI {
      * @param alpha Alphan arvo
      * @param beta Betan arvo
      */
-    private void decideNextMove(int[][] gameBoard, int player, int opponent, int depth, int wincon, int alpha, int beta) {
+    private int[][] decideNextMove(int[][] gameBoard, int player, int opponent, int depth, int wincon, int alpha, int beta) {
         int[][] movepoints = new int[gameBoard.length][gameBoard[0].length];
         for (int row = 0; row < gameBoard.length; row++) {
             for (int col = 0; col < gameBoard[0].length; col++) {
@@ -56,27 +70,41 @@ public class AI {
                 }
             }
         }
-        int bestValue = -9999998;
-        int bestRow = -1;
-        int bestCol = -1;
-        //System.out.println("VALUES");
+
+        int bestValue = Integer.MIN_VALUE;
+        int bestvals = 0;
         for (int row = 0; row < gameBoard.length; row++) {
             for (int col = 0; col < gameBoard[0].length; col++) {
-                //System.out.print(movepoints[row][col] + ", ");
-                if ((movepoints[row][col] > bestValue || bestValue == -9999998) && gameBoard[row][col] == 0 && notLonely(gameBoard, row, col)) {
-                    bestValue = movepoints[row][col];
-                    bestRow = row;
-                    bestCol = col;
+                if (gameBoard[row][col] == 0 && notLonely(gameBoard, row, col)) {
+                    if (movepoints[row][col] > bestValue) {
+                        bestValue = movepoints[row][col];
+                        bestvals = 1;
+                    } else if (movepoints[row][col] == bestValue) {
+                        bestvals++;
+                    }
+
                 }
             }
-            //System.out.println("");
         }
-        if (bestRow == -1) {
-            bestRow = gameBoard.length / 2;
-            bestCol = gameBoard.length / 2;
+        if (bestvals > 0) {
+            int[][] bestMoves = new int[bestvals][2];
+            int pos = 0;
+            for (int row = 0; row < gameBoard.length; row++) {
+                for (int col = 0; col < gameBoard[0].length; col++) {
+                    if (movepoints[row][col] == bestValue && notLonely(gameBoard, row, col) && gameBoard[row][col] == 0) {
+                        bestMoves[pos][0] = row;
+                        bestMoves[pos][1] = col;
+                        pos++;
+                    }
+                }
+            }
+            return bestMoves;
+        } else {
+            int[][] bestMoves = new int[1][2];
+            bestMoves[0][0] = gameBoard.length / 2;
+            bestMoves[0][1] = gameBoard[0].length / 2;
+            return bestMoves;
         }
-        bestCol++;
-        this.nextMove = alph[bestRow] + "-" + bestCol;
     }
 
     /**
@@ -244,6 +272,15 @@ public class AI {
             return true;
         }
         if (row > 0 && col < gb[0].length - 1 && gb[row - 1][col + 1] != 0) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean immediateMove(int player, int opponent, Game game) {
+        int[][] lines = GameStateChecker.playersLines(game.getGameBoard(), game.getWincon());
+        if (lines[player][game.getWincon() - 1] > 0
+                || lines[opponent][game.getWincon() - 1] > 0) {
             return true;
         }
         return false;
