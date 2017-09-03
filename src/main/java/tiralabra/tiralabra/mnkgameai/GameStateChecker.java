@@ -34,6 +34,14 @@ public class GameStateChecker {
         checkWtoE(shiftDown(mirrorVertical(gameBoard)), lines, wincon);
         checkWtoE(mirrorDiagonal(gameBoard), lines, wincon);
         checkWtoE(shiftDown(gameBoard), lines, wincon);
+       /* System.out.println("pelaaja 1");
+        for (int i = 1; i <= wincon; i++) {
+            System.out.println(i + " mittaisia " + lines[1][i]);
+        }
+        System.out.println("pelaaja 2");
+        for (int i = 1; i <= wincon; i++) {
+            System.out.println(i + " mittaisia " + lines[2][i]);
+        }*/
         return lines;
     }
 
@@ -158,5 +166,42 @@ public class GameStateChecker {
             }
         }
         return mirroredGameBoard;
+    }
+
+    /**
+     * Tarkastaa etta ruudun ymparilla ei ole vain tyhjia ruutuja.
+     *
+     * @param gb Peliruudukko
+     * @param row Tarkasteltavan ruudun rivi
+     * @param col Tarkasteltavan ruudun sarake
+     * @return true jos on yksinainen ruutu, false jos ei ole
+     */
+    public static boolean notLonely(int[][] gb, int row, int col) {
+
+        if (row > 0 && gb[row - 1][col] != 0) {
+            return true;
+        }
+        if (col > 0 && gb[row][col - 1] != 0) {
+            return true;
+        }
+        if (row > 0 && col > 0 && gb[row - 1][col - 1] != 0) {
+            return true;
+        }
+        if (row < gb.length - 1 && gb[row + 1][col] != 0) {
+            return true;
+        }
+        if (col < gb[0].length - 1 && gb[row][col + 1] != 0) {
+            return true;
+        }
+        if (row < gb.length - 1 && col < gb[0].length - 1 && gb[row + 1][col + 1] != 0) {
+            return true;
+        }
+        if (row < gb.length - 1 && col > 0 && gb[row + 1][col - 1] != 0) {
+            return true;
+        }
+        if (row > 0 && col < gb[0].length - 1 && gb[row - 1][col + 1] != 0) {
+            return true;
+        }
+        return false;
     }
 }

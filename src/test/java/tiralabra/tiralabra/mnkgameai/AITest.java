@@ -27,6 +27,7 @@ public class AITest {
         game.setWincon(3);
         AI ai = new AI(Game.getAlph());
         String move = ai.getNextMove(1, 2, game);
+       
         org.junit.Assert.assertEquals("b-2", move);
     }
     
@@ -42,6 +43,7 @@ public class AITest {
         game.setWincon(3);
         AI ai = new AI(Game.getAlph());
         String move = ai.getNextMove(2, 1, game);
+        
         org.junit.Assert.assertEquals("c-1", move);
     }
     
@@ -59,6 +61,5 @@ public class AITest {
         String move = ai.getNextMove(1, 2, game);
         org.junit.Assert.assertEquals("c-1", move);
     }
-
     
 }

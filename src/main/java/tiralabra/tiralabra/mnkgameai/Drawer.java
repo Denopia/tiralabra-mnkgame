@@ -1,8 +1,8 @@
 package tiralabra.tiralabra.mnkgameai;
 
 /**
- * Luokka on vastuussa pelitilanteiden piirtamisesta
- *
+ * Luokka on vastuussa pelitilanteiden piirtamisesta ja monimutkaisempien
+ * viestien tulostuksesta.
  */
 public class Drawer {
 
@@ -68,6 +68,7 @@ public class Drawer {
             }
             System.out.print("+\n");
         }
+        System.out.println("");
     }
 
     /**
@@ -83,6 +84,42 @@ public class Drawer {
             System.out.println("Pelin voitti pelaaja " + winner + ".");
         }
 
+    }
+
+    /**
+     * Tulostaa viestin tekoalyn miettiessa siirtoa. (Talla hetkella vain
+     * tavallinen tulostus.)
+     *
+     * @param player Vuorossa oleva pelaaja
+     */
+    static void drawThinkingMessage(int player) {
+        System.out.println("Pelaaja " + player + ": \"Hetkinen, mietin siirtoani...\"");
+    }
+
+    /**
+     * Tulostaa viestin tekoalyn paattamasta siirrosta. (Talla hetkella vain
+     * tavallinen tulostus.)
+     *
+     * @param player Vuorossa oleva pelaaja
+     */
+    static void drawNextMoveMessage(int player, String nextMove) {
+        System.out.println("Pelaaja " + player + ": \"Teen siirtoni ruutuun " + nextMove + ".\"");
+    }
+
+    /**
+     * Tulostaa ilmoituksen ihmispelaajan vuorosta. (Talla hetkella vain
+     * tavallinen tulostus.)
+     */
+    static void drawHumanPlayersTurnNotice() {
+        System.out.println("Sinun vuorosi tehdä siirto (anna ruutu muodossa rivi-sarake esim. e-3).");
+    }
+
+    /**
+     * Tulostaa ilmoituksen siirrosta, joka ei ole sallittu.(Talla hetkella vain
+     * tavallinen tulostus.)
+     */
+    static void drawIllegalMoveError() {
+        System.out.println("Siirto ei ole sallittu.");
     }
 
 }

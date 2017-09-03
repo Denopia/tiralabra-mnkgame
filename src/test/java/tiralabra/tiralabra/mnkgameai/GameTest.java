@@ -138,7 +138,7 @@ public class GameTest {
         String data = "1\n1\n1";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
         Game game = new Game();
-        game.askSettings();
+        game.changeSettings(false);
         Assert.assertEquals(3, game.getGameBoard().length);
         Assert.assertEquals(3, game.getGameBoard()[0].length);
         Assert.assertEquals(1, game.getFirstPlayer());
@@ -149,7 +149,7 @@ public class GameTest {
         String data = "-1\n1\n1\n3";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
         Game game = new Game();
-        game.askSettings();
+        game.changeSettings(false);
         Assert.assertEquals(5, game.getGameBoard().length);
         Assert.assertEquals(5, game.getGameBoard()[0].length);
         Assert.assertEquals(1, game.getFirstPlayer());
@@ -160,7 +160,7 @@ public class GameTest {
         String data = "2\n2";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
         Game game = new Game();
-        game.askSettings();
+        game.changeSettings(false);
         Assert.assertEquals(6, game.getGameBoard().length);
         Assert.assertEquals(4, game.getGameBoard()[0].length);
         Assert.assertEquals(1, game.getFirstPlayer());
@@ -173,7 +173,7 @@ public class GameTest {
         String data = "1\n2\n4";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
         Game game = new Game();
-        game.askSettings();
+        game.changeSettings(false);
         Assert.assertEquals(9, game.getGameBoard().length);
         Assert.assertEquals(9, game.getGameBoard()[0].length);
         Assert.assertEquals(2, game.getFirstPlayer());

@@ -64,10 +64,10 @@ public class Player {
      * @return Ruutu, johon pelaaja haluaa laittaa merkkinsa
      */
     private String readMove(Game game) {
-        System.out.println("Sinun vuorosi tehdä siirto (anna ruutu muodossa rivi-sarake esim. e-3)");
+        Drawer.drawHumanPlayersTurnNotice();       
         String move = game.getScanner().nextLine();
         while (!game.validMove(move)) {
-            System.out.println("Siirto ei ole sallittu");
+            Drawer.drawIllegalMoveError();
             move = game.getScanner().nextLine();
         }
         return move;

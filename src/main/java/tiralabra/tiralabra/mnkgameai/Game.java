@@ -16,6 +16,7 @@ public class Game {
     private int[][] gameBoard;
     private int turn;
     private int wincon;
+    private int depth;
     private int lastMove1[];
     private int lastMove2[];
     private Scanner scanner;
@@ -32,14 +33,36 @@ public class Game {
         this.lastMove1[1] = -1;
         this.lastMove2[0] = -1;
         this.lastMove2[1] = -1;
+        this.depth = 0;
     }
 
     /**
      * Kysyy kayttajalta peliasetukset.
+     *
+     * @param defaultSettings true jos kaytetaan oletusasetuksia, false jos
+     * kysytaan asetukset kayttajalta.
      */
-    void askSettings() {
-        askPlayers();
-        askBoardSize();
+    void changeSettings(boolean defaultSettings) {
+        //Oletusasetusten kaytto tarkoitettu vain testausta varten
+        if (defaultSettings) {
+            AI ai = new AI(alph);
+            this.setPlayer1(new Player(1, 'o', 'O', Player.Type.AI, ai));
+            this.setPlayer2(new Player(2, 'x', 'X', Player.Type.AI, ai));
+            this.setTurn(1);
+            this.setFirstPlayer(1);
+
+            int rows = 10;
+            int cols = 10;
+            int winconz = 5;
+            this.setGameBoard(new int[rows][cols]);
+            this.setWincon(winconz);
+            this.setAvailableMoves(rows * cols);
+
+        } else {
+            askPlayers();
+            askBoardSize();
+        }
+        this.updateDepth();
     }
 
     /**
@@ -48,46 +71,46 @@ public class Game {
     private void askBoardSize() {
         int rows = 10;
         int cols = 10;
-        int wincon = 5;
+        int wc = 5;
         int gb = askANumber("\nValitse ruudukon koko ja voittosuoran pituus\n 1) 3x3    3\n 2) 6x4    4\n 3) 5x5    5\n 4) 9x9    5\n 5) 10x10  5\n 6) 15x15  5", 6);
         switch (gb) {
             case 1:
                 rows = 3;
                 cols = 3;
-                wincon = 3;
+                wc = 3;
                 break;
             case 2:
                 rows = 6;
                 cols = 4;
-                wincon = 4;
+                wc = 4;
                 break;
             case 3:
                 rows = 5;
                 cols = 5;
-                wincon = 5;
+                wc = 5;
                 break;
             case 4:
                 rows = 9;
                 cols = 9;
-                wincon = 5;
+                wc = 5;
                 break;
             case 5:
                 rows = 10;
                 cols = 10;
-                wincon = 5;
+                wc = 5;
                 break;
             case 6:
                 rows = 15;
                 cols = 15;
-                wincon = 5;
+                wc = 5;
         }
         this.setGameBoard(new int[rows][cols]);
-        this.setWincon(wincon);
+        this.setWincon(wc);
         this.setAvailableMoves(rows * cols);
     }
 
     /**
-     * Kysyy kayttajalta luvun yhden ja annetun luvun valilta.
+     * Kysyy kayttajalta luvun yhden ja parametrina annetun luvun valilta.
      *
      * @param message Kayttajalle naytettava viesti
      * @param options Suurin luku, jonka kayttaja voi antaa
@@ -95,22 +118,21 @@ public class Game {
      */
     private int askANumber(String message, int options) {
         System.out.println(message);
-        String ans = "valinta";
-        int nunbero = -1;
+        int choice = -1;
         while (true) {
-            ans = scanner.nextLine();
+            String ans = scanner.nextLine();
             try {
-                nunbero = Integer.parseInt(ans);
+                choice = Integer.parseInt(ans);
             } catch (NumberFormatException e) {
 
             }
-            if (nunbero < 0 || nunbero > options) {
+            if (choice <= 0 || choice > options) {
                 System.out.println("Yritä valita yksi esitetyistä vaihtoehdoista");
                 continue;
             }
             break;
         }
-        return nunbero;
+        return choice;
     }
 
     /**
@@ -161,7 +183,6 @@ public class Game {
      */
     public void newSymbol(int p, String move) {
         int row = 0;
-        int col = 0;
         String[] rowcol = move.split("-");
         for (int i = 0; i < alph.length; i++) {
             if (rowcol[0].equals("" + alph[i])) {
@@ -169,7 +190,7 @@ public class Game {
                 break;
             }
         }
-        col = Integer.parseInt(rowcol[1]) - 1;
+        int col = Integer.parseInt(rowcol[1]) - 1;
         this.gameBoard[row][col] = p;
         if (p == 1) {
             this.lastMove1[0] = row;
@@ -180,13 +201,14 @@ public class Game {
             this.lastMove2[1] = col;
         }
         this.setAvailableMoves(this.getAvailableMoves() - 1);
+        this.updateDepth();
     }
 
     /**
-     * Tarkastaa etta siirto on laillinen
+     * Tarkastaa etta siirto on sallittu.
      *
      * @param move Tarkastettava siirto
-     * @return true jos siirron saa tehda, false jos ei
+     * @return True jos siirron saa tehda, false jos ei
      */
     boolean validMove(String move) {
         String[] rowcolumn = move.split("-");
@@ -242,6 +264,30 @@ public class Game {
      */
     public boolean gameOver() {
         return GameStateChecker.checkGameOver(this.gameBoard, this.wincon) || this.getAvailableMoves() == 0;
+    }
+
+    /**
+     * Paivittaa tekoalyn kayttaman syvyyden pelipuuta tutkittaessa.
+     */
+    private void updateDepth() {
+        int pm = 0;
+        for (int r = 0; r < this.gameBoard.length; r++) {
+            for (int c = 0; c < this.gameBoard[0].length; c++) {
+                if (this.gameBoard[r][c] == 0 && GameStateChecker.notLonely(this.gameBoard, r, c)) {
+                    pm++;
+                }
+            }
+        }
+        this.depth = 3;
+        if (pm < 25) {
+            this.depth = 4;
+        }
+        if (pm < 10 && this.availableMoves < 10) {
+            this.depth = availableMoves;
+        }
+        if (pm == 0) {
+            this.depth = 3;
+        }
     }
 
     public Player getPlayer1() {
@@ -330,5 +376,9 @@ public class Game {
 
     public void setAvailableMoves(int availableMoves) {
         this.availableMoves = availableMoves;
+    }
+
+    public int getDepth() {
+        return this.depth;
     }
 }

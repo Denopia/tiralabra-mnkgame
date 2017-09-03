@@ -8,9 +8,14 @@ import java.util.Random;
  */
 public class AI {
 
+    /**
+     * Kaytetaan javan valmista Random-luokkaa, koska ei ollut aikaa toteuttaa
+     * sita itse. Tekoaly voisi toimia ilman satunnaisuutta, mutta kaikki pelit
+     * etenisivat identtisesti kun tekoaly pelaa itseaan vastaan.
+     */
+    private Random random;
     private final char[] alph;
     private String nextMove;
-    private Random random;
 
     /**
      * Konstruktori.
@@ -32,17 +37,21 @@ public class AI {
      * @return Ruutu, johon tekoaly haluaa laittaa merkkinsa
      */
     public String getNextMove(int player, int opponent, Game game) {
+        Drawer.drawThinkingMessage(player);
         int[][] moves;
-        if (immediateMove(player, opponent, game)) {
-            System.out.println("IMMEDIATE MOVE");
-            moves = decideNextMove(game.getGameBoard(), player, opponent, 0, game.getWincon(), -999999999, 999999999);
+        if (immediateMoveAndWin(player, opponent, game)) {
+            moves = decideNextMove(game.getGameBoard(), player, opponent, 0, game.getWincon(), Integer.MIN_VALUE, Integer.MAX_VALUE);
+        } else if (immediateMoveOrLose(player, opponent, game)) {
+            moves = decideNextMove(game.getGameBoard(), player, opponent, 1, game.getWincon(), Integer.MIN_VALUE, Integer.MAX_VALUE);
         } else {
-            moves = decideNextMove(game.getGameBoard(), player, opponent, 3, game.getWincon(), -999999999, 999999999);
+            moves = decideNextMove(game.getGameBoard(), player, opponent, game.getDepth(), game.getWincon(), Integer.MIN_VALUE, Integer.MAX_VALUE);
         }
         int move = this.random.nextInt(moves.length);
         int row = moves[move][0];
         int col = moves[move][1] + 1;
         this.nextMove = alph[row] + "-" + col;
+        Drawer.drawNextMoveMessage(player, this.nextMove);
+
         return this.nextMove;
     }
 
@@ -61,7 +70,7 @@ public class AI {
         int[][] movepoints = new int[gameBoard.length][gameBoard[0].length];
         for (int row = 0; row < gameBoard.length; row++) {
             for (int col = 0; col < gameBoard[0].length; col++) {
-                if (gameBoard[row][col] != 0 || !notLonely(gameBoard, row, col)) {
+                if (gameBoard[row][col] != 0 || !GameStateChecker.notLonely(gameBoard, row, col)) {
                     movepoints[row][col] = 0;
                 } else {
                     int[][] clone = cloneBoard(gameBoard);
@@ -75,7 +84,7 @@ public class AI {
         int bestvals = 0;
         for (int row = 0; row < gameBoard.length; row++) {
             for (int col = 0; col < gameBoard[0].length; col++) {
-                if (gameBoard[row][col] == 0 && notLonely(gameBoard, row, col)) {
+                if (gameBoard[row][col] == 0 && GameStateChecker.notLonely(gameBoard, row, col)) {
                     if (movepoints[row][col] > bestValue) {
                         bestValue = movepoints[row][col];
                         bestvals = 1;
@@ -86,12 +95,20 @@ public class AI {
                 }
             }
         }
+        /*for (int i = 0; i < movepoints.length; i++) {
+            for (int j = 0; j < movepoints[0].length; j++) {
+                System.out.print(movepoints[i][j] + " = ");
+            }
+            System.out.println("");
+            System.out.println("===========================================================================");
+        }*/
+
         if (bestvals > 0) {
             int[][] bestMoves = new int[bestvals][2];
             int pos = 0;
             for (int row = 0; row < gameBoard.length; row++) {
                 for (int col = 0; col < gameBoard[0].length; col++) {
-                    if (movepoints[row][col] == bestValue && notLonely(gameBoard, row, col) && gameBoard[row][col] == 0) {
+                    if (movepoints[row][col] == bestValue && GameStateChecker.notLonely(gameBoard, row, col) && gameBoard[row][col] == 0) {
                         bestMoves[pos][0] = row;
                         bestMoves[pos][1] = col;
                         pos++;
@@ -121,19 +138,19 @@ public class AI {
      */
     private int maxValue(int[][] gameBoard, int wincon, int player, int opponent, int depth, int alpha, int beta) {
         int[][] lines = GameStateChecker.playersLines(gameBoard, wincon);
-        if (winnerIsDecided(lines, wincon) || depth == 0) {
+        if (winnerIsDecided(lines, wincon) || depth == 0 || noMovesLeft(gameBoard)) {
             return gameBoardValue(lines, player, opponent, player);
         }
-        int value = -999999999;
+        int value = Integer.MIN_VALUE;
         for (int row = 0; row < gameBoard.length; row++) {
             for (int col = 0; col < gameBoard[0].length; col++) {
-                if (gameBoard[row][col] != 0 || !notLonely(gameBoard, row, col)) {
+                if (gameBoard[row][col] != 0 || !GameStateChecker.notLonely(gameBoard, row, col)) {
                     continue;
                 } else {
                     int[][] clone = cloneBoard(gameBoard);
                     clone[row][col] = player;
-                    value = Math.max(value, minValue(clone, wincon, player, opponent, depth - 1, alpha, beta));
-                    alpha = Math.max(alpha, value);
+                    value = biggerValue(value, minValue(clone, wincon, player, opponent, depth - 1, alpha, beta));
+                    alpha = biggerValue(alpha, value);
                     if (beta <= alpha) {
                         return value;
                     }
@@ -157,19 +174,19 @@ public class AI {
      */
     private int minValue(int[][] gameBoard, int wincon, int player, int opponent, int depth, int alpha, int beta) {
         int[][] lines = GameStateChecker.playersLines(gameBoard, wincon);
-        if (winnerIsDecided(lines, wincon) || depth == 0) {
+        if (winnerIsDecided(lines, wincon) || depth == 0 || noMovesLeft(gameBoard)) {
             return gameBoardValue(lines, player, opponent, opponent);
         }
-        int value = 999999999;
+        int value = Integer.MAX_VALUE;
         for (int row = 0; row < gameBoard.length; row++) {
             for (int col = 0; col < gameBoard[0].length; col++) {
-                if (gameBoard[row][col] != 0 || !notLonely(gameBoard, row, col)) {
+                if (gameBoard[row][col] != 0 || !GameStateChecker.notLonely(gameBoard, row, col)) {
                     continue;
                 } else {
                     int[][] clone = cloneBoard(gameBoard);
                     clone[row][col] = opponent;
-                    value = Math.min(value, maxValue(clone, wincon, player, opponent, depth - 1, alpha, beta));
-                    beta = Math.min(beta, value);
+                    value = smallerValue(value, maxValue(clone, wincon, player, opponent, depth - 1, alpha, beta));
+                    beta = smallerValue(beta, value);
                     if (beta <= alpha) {
                         return value;
                     }
@@ -203,24 +220,28 @@ public class AI {
      * @return Pelitilanteen pistearvio
      */
     private int gameBoardValue(int[][] lines, int player, int opponent, int next) {
-        int value = 0;
-        int m = 1;
-        if (player == next) {
-            for (int i = 1; i <= lines.length; i++) {
+        int value = 1;
+        int m = 10;
+        if (player == next || true) {
+            for (int i = 2; i <= lines.length - 1; i++) {
                 value += lines[player][i] * m;
-                m = 10 * m;
+                m = 100 * m;
             }
         }
-        m = 1;
-        for (int i = 1; i <= lines.length; i++) {
+        m = 20;
+        for (int i = 2; i <= lines.length - 1; i++) {
             value -= lines[opponent][i] * m;
-            m = 10 * m;
+            m = m * m;
         }
-        if (lines[player][lines[0].length - 1] > 0) {
-            value += 9999997;
+        if (lines[opponent][lines[0].length - 1] == 0
+                && (lines[player][lines[0].length - 1] > 0
+                || (lines[player][lines[0].length - 2] > 0 && next == player))) {
+            value = Integer.MAX_VALUE;
         }
-        if (lines[opponent][lines[0].length - 1] > 0) {
-            value += -9999997;
+        if (lines[player][lines[0].length - 1] == 0
+                && (lines[opponent][lines[0].length - 1] > 0
+                || (lines[opponent][lines[0].length - 2] > 0 && next == opponent))) {
+            value = Integer.MIN_VALUE;
         }
         return value;
     }
@@ -242,48 +263,67 @@ public class AI {
     }
 
     /**
-     * Tarkastaa etta ruudun ymparilla ei ole vain tyhjia ruutuja.
+     * Tarkastaa voittaako pelaaja heti yhdella siirrolla.
      *
-     * @param gb Peliruudukko
-     * @param row Tarkasteltavan ruudun rivi
-     * @param col Tarkasteltavan ruudun sarake
-     * @return true jos on yksinainen ruutu, false jos ei ole
+     * @param player Vuorossa oleva pelaaja
+     * @param opponent Vuorossa olevan pelaajan vastustaja
+     * @param game Tutkittava peli
+     * @return True jos pelaaja voi voittaa heti, false jos ei
      */
-    private boolean notLonely(int[][] gb, int row, int col) {
-        if (row > 0 && gb[row - 1][col] != 0) {
-            return true;
-        }
-        if (col > 0 && gb[row][col - 1] != 0) {
-            return true;
-        }
-        if (row > 0 && col > 0 && gb[row - 1][col - 1] != 0) {
-            return true;
-        }
-        if (row < gb.length - 1 && gb[row + 1][col] != 0) {
-            return true;
-        }
-        if (col < gb[0].length - 1 && gb[row][col + 1] != 0) {
-            return true;
-        }
-        if (row < gb.length - 1 && col < gb[0].length - 1 && gb[row + 1][col + 1] != 0) {
-            return true;
-        }
-        if (row < gb.length - 1 && col > 0 && gb[row + 1][col - 1] != 0) {
-            return true;
-        }
-        if (row > 0 && col < gb[0].length - 1 && gb[row - 1][col + 1] != 0) {
-            return true;
-        }
-        return false;
-    }
-
-    private boolean immediateMove(int player, int opponent, Game game) {
+    private boolean immediateMoveAndWin(int player, int opponent, Game game) {
         int[][] lines = GameStateChecker.playersLines(game.getGameBoard(), game.getWincon());
-        if (lines[player][game.getWincon() - 1] > 0
-                || lines[opponent][game.getWincon() - 1] > 0) {
-            return true;
-        }
-        return false;
+        return lines[player][game.getWincon() - 1] > 0;
     }
 
+    /**
+     * Tarkastaa haviaako pelaaja, jos tama ei tee heti tiettya siirtoa.
+     *
+     * @param player Vuorossa oleva pelaaja
+     * @param opponent Vuorossa olevan pelaajan vastustaja
+     * @param game Tutkittava peli
+     * @return True jos on pakko tehda tietty siirto, false jos ei
+     */
+    private boolean immediateMoveOrLose(int player, int opponent, Game game) {
+        int[][] lines = GameStateChecker.playersLines(game.getGameBoard(), game.getWincon());
+        return lines[opponent][game.getWincon() - 1] > 0;
+    }
+
+    /**
+     * Palauttaa kahdesta luvusta suuremman.
+     *
+     * @param value1 1. vertailtava arvo
+     * @param value2 2. vertailtava arvo
+     * @return Suurempi arvo
+     */
+    private int biggerValue(int value1, int value2) {
+        if (value1 >= value2) {
+            return value1;
+        }
+        return value2;
+    }
+
+    /**
+     * Palauttaa kahdesta luvusta pienemman.
+     *
+     * @param value1 1. vertailtava arvo
+     * @param value2 2. vertailtava arvo
+     * @return Pienempi arvo
+     */
+    private int smallerValue(int value1, int value2) {
+        if (value1 <= value2) {
+            return value1;
+        }
+        return value2;
+    }
+
+    private boolean noMovesLeft(int[][] gameBoard) {
+        for (int i = 0; i < gameBoard.length; i++) {
+            for (int j = 0; j < gameBoard[0].length; j++) {
+                if (gameBoard[i][j] == 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }
