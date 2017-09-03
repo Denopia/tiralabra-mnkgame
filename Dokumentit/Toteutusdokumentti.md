@@ -103,7 +103,7 @@ esimerkiksi 10x10 kokoisella ruudukolla, mahdollisia siirtoja oli pelin keski- j
 noin 20-50 kappaletta. Tämä siirtojen karsiminen siis nopeuttaa algoritmin toimintaa huomattavasti.
 
 
-###Parannusehdotukset ja puutteet
+### Parannusehdotukset ja puutteet
 
 Aikaisemmin onkin jo tullut esille asioita, joissa olisi parannettavaa. Toiminnallisuutta olisi
 ollut mukava saada laajennettua siten, että käyttäjä saa valita haluamansa kokoisen ruudukon.
